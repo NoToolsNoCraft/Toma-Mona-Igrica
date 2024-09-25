@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Sakupite jaja Tome Mone</title>
+</head>
+<body>
+
+    <div class="canvas-score-container">
+        <table id="score-table" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>:</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <canvas id="my-canvas" width="900" height="600" style="border: 1px solid #444;"></canvas> 
+    </div>
+    <div id="game-over-message" style="display: none;">
+        <h1 id="gameovermessage">Što si skupijo skupijo si!<br> Idi žderi narode dok možeš!</h1>
+        <button onclick="playAgain()" class="btn">Igraj ponovo</button>
+    </div>
+    
+    <script>
+let canvas, ctx;
+let heading, x, y, dy, basketX, rightpressed, leftpressed, score, lives, level, basketSpeed;
+let gameOver = false; // New variable to track game over state
+
+let eggImage = new Image();
+eggImage.src = "images/egg3.png";
+
+let basketImage = new Image();
+basketImage.src = "images/Korpa.png";
+
+let backgroundImage = new Image();
+backgroundImage.src = "images/new.jpg";
+
+function initGame() {
+    
+
+
+    canvas = document.getElementById("my-canvas");
+    ctx = canvas.getContext("2d");
+
+    // Set fixed dimensions for the canvas
+    canvas.width = 900; // Set to desired width
+    canvas.height = 600; // Set to desired height
+    
+    x = Math.random() * (canvas.clientWidth - 120) + 60; // Random initial x position
+    y = 0;
+    dy = 2;
+    basketX = canvas.clientWidth / 2;
+    rightpressed = false;
+    leftpressed = false;
+    score = 0; // Initialize score to 0
+    lives = 3;
+    level = 1;
+    basketSpeed = 7;
+
+    document.addEventListener("keydown", keydownhandler, false);
+    document.addEventListener("keyup", keyuphandler, false);
+    // Add touch event listeners to the canvas for mobile controls
+    canvas.addEventListener("touchstart", touchStartHandler, false);
+    canvas.addEventListener("touchmove", touchMoveHandler, false);
+    canvas.addEventListener("touchend", touchEndHandler, false);
+
+    draw(); // Start drawing
+}
+
+function keydownhandler(e) {
+    if (e.key === "Right" || e.key === "ArrowRight") {
+        rightpressed = true;
+    } else if (e.key === "Left" || e.key === "ArrowLeft") {
+        leftpressed = true;
+    }
+}
+
+function keyuphandler(e) {
+    if (e.key === "Right" || e.key === "ArrowRight") {
+        rightpressed = false;
+    } else if (e.key === "Left" || e.key === "ArrowLeft") {
+        leftpressed = false;
+    }
+}
+
+function background() {
+    ctx.drawImage(backgroundImage, 0, 0);
+}
+
+function egg() {
+    ctx.drawImage(eggImage, x, y);
+}
+
+function basket() {
+    // Detect if the user is on mobile or vertical mobile
+    const verticalMobile = window.innerWidth <= 500;
+    const isMobile = window.innerWidth < 900 && !verticalMobile; // Ensure it's mobile but not verticalMobile
+
+    // Set the Y position for the basket based on device type
+    let basketPositionY;
+
+    if (verticalMobile) {
+        // Position for vertical mobile (e.g., smartphones in portrait)
+        basketPositionY = canvas.clientHeight - -60; // Adjust Y position for vertical mobile if needed
+    } else if (isMobile) {
+        // Position for horizontal mobile or tablet mode
+        basketPositionY = canvas.clientHeight - 10; // Adjust Y position for mobile if needed
+    } else {
+        // Position for desktop
+        basketPositionY = canvas.clientHeight - 240; // Original Y position for desktop
+    }
+
+    // Draw the basket with the same width and height
+    ctx.drawImage(basketImage, basketX, basketPositionY, 240, 240); // Use the same size
+}
+
+function drawScore() {
+   // Set the text style
+   ctx.font = "28px Times New Roman";
+    
+    // Outline the text (use strokeText for an outline)
+    ctx.strokeStyle = "black";  // Outline color
+    ctx.lineWidth = 4;  // Thickness of the outline
+    ctx.strokeText(`Sakupljena jajca: ${score}`, canvas.width / 2 - 430, 55);
+    
+    // Fill the text
+    ctx.fillStyle = "white";  // Inner text color
+    ctx.fillText(`Sakupljena jajca: ${score}`, canvas.width / 2 - 430, 55);
+}
+
+function drawLives() {
+   // Set the text style
+   ctx.font = "28px Times New Roman";
+    
+    // Outline the text (use strokeText for an outline)
+    ctx.strokeStyle = "black";  // Outline color
+    ctx.lineWidth = 4;  // Thickness of the outline
+    ctx.strokeText(`Preostalo života: ${lives}`, canvas.width / 2 - 430, 580);
+    
+    // Fill the text
+    ctx.fillStyle = "white";  // Inner text color
+    ctx.fillText(`Preostalo života: ${lives}`, canvas.width / 2 - 430, 580);
+}
+
+function drawLevel() {
+    // Set the text style
+    ctx.font = "28px Times New Roman";
+    
+    // Outline the text (use strokeText for an outline)
+    ctx.strokeStyle = "black";  // Outline color
+    ctx.lineWidth = 4;  // Thickness of the outline
+    ctx.strokeText(`Brzina pada jaja: ${level}`, canvas.width / 2 - 430, 90);
+    
+    // Fill the text
+    ctx.fillStyle = "white";  // Inner text color
+    ctx.fillText(`Brzina pada jaja: ${level}`, canvas.width / 2 - 430, 90);
+}
+
+
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    background();
+    egg();
+    basket();
+    drawScore();
+    drawLives();
+    drawLevel();
+
+    // Move the egg down the screen
+    y += dy;
+
+    // Determine whether the device is mobile or desktop
+const isMobile = window.innerWidth <= 900; // Define a threshold for mobile devices (e.g., 900px width)
+const verticalMobile = window.innerWidth <= 500;
+
+// Check if the egg has reached the basket area
+if (y > canvas.clientHeight * (verticalMobile ? 1.4 : isMobile ? 1.1 : 0.67)) {
+    if (x > basketX && x < basketX + 240) {
+        // Egg caught
+        score++;
+        updateScore(score);
+        // Increase speed and level after every 8 eggs
+        if (score % 8 === 0) {
+            dy += 1; // Increase falling speed
+            basketSpeed += 2; // Increase basket speed
+            level++;
+        }
+        // Reset egg position
+        x = Math.random() * (isMobile ? canvas.clientWidth + 120 : canvas.clientWidth - 120) + 60; // Random x position
+        y = 0; // Reset y position
+    } else {
+        // Egg missed
+        lives--;
+        if (lives <= 0) {
+            gameOver = true; // Set gameOver flag
+            // Display game over message
+            document.getElementById("game-over-message").style.display = "block"; // Show game over message
+            return; // Exit the draw function
+        } else {
+            // Reset egg position
+            x = Math.random() * (canvas.clientWidth - 120) + 60; // Random x position
+            y = 0; // Reset y position
+        }
+    }
+}
+
+// Move the basket based on user input
+if (rightpressed) {
+    basketX = Math.min(basketX + basketSpeed, canvas.clientWidth - (verticalMobile ? canvas.clientWidth * -0.6 : isMobile ? canvas.clientWidth * -0.1 : 240));
+} else if (leftpressed) {
+    basketX = Math.max(basketX - basketSpeed, 0);
+}
+
+if (!gameOver) {
+    requestAnimationFrame(draw); // Request the next frame only if the game is not over
+}
+}
+
+function updateScore(newScore) {
+    console.log(`Score updated: ${newScore}`); // Log score updates
+    // Emit the "updateScore" event to the server with the new score
+    // Uncomment the line below when you have socket setup
+    // socket.emit("updateScore", newScore);
+}
+
+function playAgain() {
+    location.reload(); // Reload the page
+}
+
+
+window.onload = function () {
+    initGame(); // Automatically start the game when the page loads
+    window.addEventListener('resize', initGame); // Adjust canvas on window resize
+};
+
+
+// Touch event handlers
+function touchStartHandler(e) {
+    e.preventDefault();
+    handleTouchMove(e.touches[0]);
+}
+
+function touchMoveHandler(e) {
+    e.preventDefault();
+    handleTouchMove(e.touches[0]);
+}
+
+function touchEndHandler() {
+    rightpressed = false;
+    leftpressed = false;
+}
+function handleTouchMove(touch) {
+    // Get the canvas position on the screen
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    // Calculate touch position relative to the canvas
+    const touchX = touch.clientX - canvasRect.left;
+    
+    // Move the basket directly based on the touch position
+    basketX = touchX - (240 / 2); // Center the basket on the touch point
+    
+    // Ensure the basket stays within the canvas bounds
+    basketX = Math.max(0, Math.min(basketX, canvas.width - 240));
+}
+
+    </script>
+</body>
+</html>

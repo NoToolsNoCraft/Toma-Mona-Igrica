@@ -1,0 +1,106 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden; /* Prevent scrolling */
+    background-color: coral;
+}
+
+
+
+.canvas-score-container {
+    display: flex;
+    flex-direction: column; /* Stack elements on smaller screens */
+    align-items: center;
+    width: 100%; /* Ensure it uses full width */
+    
+}
+
+table {
+    border: 5px solid black;
+    height: auto; /* Adjust height automatically */
+    padding: 0.8rem;
+    margin-bottom: 2rem;
+    width: 90%; /* Make table responsive */
+}
+
+thead {
+    color: red;
+    font-size: 2rem;
+}
+
+tbody {
+    font-size: 1.2rem;
+    color: green;
+    text-align: center;
+}
+
+#game-over-message {
+    position: absolute; /* Use absolute positioning */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust positioning */
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    color: white; /* Text color */
+    padding: 20px; /* Padding around the content */
+    border-radius: 10px; /* Rounded corners */
+    z-index: 10; /* Ensure it appears above other content */
+    text-align: center; /* Center text */
+    
+}
+
+.btn {
+    color: white;
+    background-color: rgb(7, 7, 197);
+    padding: 1rem 2rem;
+    border: none;
+    margin-left: 1.4rem;
+    margin-top: 30px;
+}
+
+.btn:hover {
+    color: black;
+    background-color: blue;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .canvas-score-container {
+        display: flex;
+        justify-content: center; /* Center the canvas horizontally */
+        align-items: center; /* Center the canvas vertically */
+    }
+
+    #my-canvas {
+        width: 100vw; /* Set width to a percentage of the viewport width */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 600px; /* Limit max width to original canvas width */
+        max-height: 90vh; /* Limit max height to original canvas height */
+    }
+}
+
+@media (max-width: 500px) {
+    .canvas-score-container {
+        display: flex;
+        justify-content: center; /* Center the canvas horizontally */
+        align-items: center; /* Center the canvas vertically */
+    }
+
+    #my-canvas {
+        width: 100vw; /* Set width to a percentage of the viewport width */
+        height: auto; /* Maintain aspect ratio */
+        max-width: 600px; /* Limit max width to original canvas width */
+        max-height: 100vh; /* Limit max height to original canvas height */
+    }
+}
