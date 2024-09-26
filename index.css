@@ -14,14 +14,11 @@ body {
     background-color: coral;
 }
 
-
-
 .canvas-score-container {
     display: flex;
     flex-direction: column; /* Stack elements on smaller screens */
     align-items: center;
     width: 100%; /* Ensure it uses full width */
-    
 }
 
 table {
@@ -45,16 +42,15 @@ tbody {
 
 #game-over-message {
     position: absolute; /* Use absolute positioning */
-    top: 50%; /* Center vertically */
+    top: 30%; /* Center vertically */
     left: 50%; /* Center horizontally */
     transform: translate(-50%, -50%); /* Adjust positioning */
     background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
     color: white; /* Text color */
     padding: 20px; /* Padding around the content */
     border-radius: 10px; /* Rounded corners */
-    z-index: 10; /* Ensure it appears above other content */
+    z-index: 100; /* Ensure it appears above other content */
     text-align: center; /* Center text */
-    
 }
 
 .btn {
@@ -75,6 +71,71 @@ tbody {
     display: none;
 }
 
+#mobile-controls {
+    position: absolute; /* Make the container absolute positioned */
+    top: 40%; /* Adjust this value to move the buttons closer to the top */
+    width: 90%; /* Make sure it takes full width */
+    display: flex; /* Use flexbox to align buttons horizontally */
+    justify-content: space-between; /* Space between buttons */
+    padding: 0 20px; /* Add some padding on left and right */
+    z-index: 100; /* Ensure the buttons are above other elements */
+}
+
+.arrow-btn {
+    background-color: rgba(255, 255, 255, 0.8); /* Light background */
+    border: none; /* No border */
+    font-size: 40px; /* Adjust size as needed */
+    width: 80px; /* Fixed width */
+    height: 80px; /* Fixed height */
+    border-radius: 50%; /* Round buttons */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.arrow-btn:hover {
+    background-color: rgba(255, 255, 255, 1); /* Change color on hover */
+}
+
+@media (max-width: 500px) and (orientation: portrait) {
+    #mobile-controls {
+        position: absolute; /* Make the container absolute positioned */
+        top: 80%; /* Adjust this value to move the buttons closer to the top */
+        width: 95%; /* Make sure it takes full width */
+        display: flex; /* Use flexbox to align buttons horizontally */
+        justify-content: space-between; /* Space between buttons */
+        padding: 0 20px; /* Add some padding on left and right */
+        z-index: 10; /* Ensure the buttons are above other elements */
+    }
+}
+
+/* Additional media query to ensure they stay in the correct position only on mobile landscape */
+@media (max-width: 900px) and (orientation: landscape) {
+    #mobile-controls {
+        position: absolute; /* Make the container absolute positioned */
+        top: 70%; /* Adjust this value to move the buttons closer to the top */
+        width: 100%; /* Make sure it takes full width */
+        display: flex; /* Use flexbox to align buttons horizontally */
+        justify-content: space-between; /* Space between buttons */
+        padding: 0 20px; /* Add some padding on left and right */
+        z-index: 10; /* Ensure the buttons are above other elements */
+    }
+
+    #game-over-message {
+        position: absolute; /* Use absolute positioning */
+        top: 30%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        transform: translate(-50%, -50%); /* Adjust positioning */
+        background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+        color: white; /* Text color */
+        font-size: 10px;
+        padding: 20px; /* Padding around the content */
+        border-radius: 10px; /* Rounded corners */
+        z-index: 100; /* Ensure it appears above other content */
+        text-align: center; /* Center text */
+    }
+}
+
+/* Mobile portrait styles */
 @media (max-width: 900px) {
     .canvas-score-container {
         display: flex;
@@ -102,5 +163,31 @@ tbody {
         height: auto; /* Maintain aspect ratio */
         max-width: 600px; /* Limit max width to original canvas width */
         max-height: 100vh; /* Limit max height to original canvas height */
+    }
+}
+
+/* Styles for mobile landscape mode */
+@media (max-width: 900px) {
+    .left-arrow {
+        position: absolute; /* Place it relative to the body */
+        left: 10px; /* Adjust to position it next to the container */
+        top: 90%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust to truly center */
+        z-index: 10; /* Ensure it appears above other content */
+    }
+
+    .right-arrow {
+        position: absolute; /* Place it relative to the body */
+        right: 10px; /* Adjust to position it next to the container */
+        top: 90%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust to truly center */
+        z-index: 10; /* Ensure it appears above other content */
+    }
+}
+
+/* Hide buttons in desktop mode */
+@media (min-width: 900px) {
+    #mobile-controls {
+        display: none; /* Hide the entire mobile controls section on desktop */
     }
 }
