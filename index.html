@@ -27,6 +27,11 @@
         <button onclick="playAgain()" class="btn">Igraj ponovo</button>
     </div>
     
+    <div id="mobile-controls">
+        <button id="left-arrow" class="arrow-btn">&larr;</button>
+        <button id="right-arrow" class="arrow-btn">&rarr;</button>
+    </div>
+
     <script>
 let canvas, ctx;
 let heading, x, y, dy, basketX, rightpressed, leftpressed, score, lives, level, basketSpeed;
@@ -41,10 +46,11 @@ basketImage.src = "images/Korpa.png";
 let backgroundImage = new Image();
 backgroundImage.src = "images/new.jpg";
 
+
+
+
 function initGame() {
     
-
-
     canvas = document.getElementById("my-canvas");
     ctx = canvas.getContext("2d");
 
@@ -69,6 +75,26 @@ function initGame() {
     canvas.addEventListener("touchstart", touchStartHandler, false);
     canvas.addEventListener("touchmove", touchMoveHandler, false);
     canvas.addEventListener("touchend", touchEndHandler, false);
+
+    // Adding functionality for the mobile buttons
+document.getElementById('left-arrow').addEventListener('touchstart', function(e) {
+    e.preventDefault();  // Prevent default long-press action
+    leftpressed = true;
+});
+document.getElementById('left-arrow').addEventListener('touchend', function() {
+    leftpressed = false;
+});
+
+document.getElementById('right-arrow').addEventListener('touchstart', function(e) {
+    e.preventDefault();  // Prevent default long-press action
+    rightpressed = true;
+});
+document.getElementById('right-arrow').addEventListener('touchend', function() {
+    rightpressed = false;
+});
+
+
+    
 
     draw(); // Start drawing
 }
@@ -201,6 +227,11 @@ if (y > canvas.clientHeight * (verticalMobile ? 1.4 : isMobile ? 1.1 : 0.67)) {
             gameOver = true; // Set gameOver flag
             // Display game over message
             document.getElementById("game-over-message").style.display = "block"; // Show game over message
+            // Disable mobile controls
+            document.getElementById('left-arrow').removeEventListener('touchstart', function() { leftpressed = true; });
+            document.getElementById('left-arrow').removeEventListener('touchend', function() { leftpressed = false; });
+            document.getElementById('right-arrow').removeEventListener('touchstart', function() { rightpressed = true; });
+            document.getElementById('right-arrow').removeEventListener('touchend', function() { rightpressed = false; });
             return; // Exit the draw function
         } else {
             // Reset egg position
@@ -230,7 +261,17 @@ function updateScore(newScore) {
 }
 
 function playAgain() {
-    location.reload(); // Reload the page
+    gameOver = false; // Reset the game over state
+    document.getElementById("game-over-message").style.display = "none"; // Hide game over message
+    
+    // Re-initialize the game to reset variables and start fresh
+    initGame();
+
+    // Re-add mobile button listeners
+    document.getElementById('left-arrow').addEventListener('touchstart', function() { leftpressed = true; });
+    document.getElementById('left-arrow').addEventListener('touchend', function() { leftpressed = false; });
+    document.getElementById('right-arrow').addEventListener('touchstart', function() { rightpressed = true; });
+    document.getElementById('right-arrow').addEventListener('touchend', function() { rightpressed = false; });
 }
 
 
@@ -256,19 +297,14 @@ function touchEndHandler() {
     leftpressed = false;
 }
 function handleTouchMove(touch) {
-    // Get the canvas position on the screen
     const canvasRect = canvas.getBoundingClientRect();
-    
-    // Calculate touch position relative to the canvas
     const touchX = touch.clientX - canvasRect.left;
-    
-    // Move the basket directly based on the touch position
     basketX = touchX - (240 / 2); // Center the basket on the touch point
-    
-    // Ensure the basket stays within the canvas bounds
     basketX = Math.max(0, Math.min(basketX, canvas.width - 240));
 }
 
+
+window.onload = initGame;
     </script>
 </body>
 </html>
